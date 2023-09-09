@@ -2,7 +2,8 @@
 
 ## Tutorial 1 - basics
 
-In progress
+[Code](./tutorials/tutorial-1-basics)
+[Article](https://www.datacamp.com/tutorial/introduction-to-dynamodb)
 
 ## Single table design
 
