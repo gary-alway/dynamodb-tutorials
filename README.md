@@ -14,6 +14,6 @@
 
 ## Tutorial 3 - Single table design
 
-[Code](./src) _This tutorial uses a slightly different codebase but the concepts are the same_
+[Code](./tutorials/tutorial-3-single-table-design) _This tutorial uses a slightly different codebase but the concepts are the same_
 
 [Article](https://www.datacamp.com/tutorial/single-table-database-design-with-dynamodb)
