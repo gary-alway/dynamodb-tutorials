@@ -31,24 +31,22 @@ export const getTracks = async (): Promise<Track[]> =>
         ':gsi1_pk': valueToAttributeValue(entityType)
       }
     })
-    .then(res =>
-      pathOr([], ['Items'], res).map(t => dynamoRecordToEntity<Track>(t))
-    )
+    .then(res => pathOr([], ['Items'], res).map(dynamoRecordToEntity<Track>))
 
 export const saveTrack = async (name: string): Promise<string> => {
-  const _id = uuidv4()
+  const id = uuidv4()
 
   await client.putItem({
     TableName: TABLE_NAME,
     Item: {
-      pk: valueToAttributeValue(addPrefix(_id, TRACK_PREFIX)),
-      sk: valueToAttributeValue(addPrefix(_id, TRACK_PREFIX)),
+      pk: valueToAttributeValue(addPrefix(id, TRACK_PREFIX)),
+      sk: valueToAttributeValue(addPrefix(id, TRACK_PREFIX)),
       gsi1_pk: valueToAttributeValue(entityType),
-      gsi1_sk: valueToAttributeValue(addPrefix(_id, TRACK_PREFIX)),
+      gsi1_sk: valueToAttributeValue(addPrefix(id, TRACK_PREFIX)),
       name: valueToAttributeValue(name),
       entityType: valueToAttributeValue(entityType)
     }
   })
 
-  return _id
+  return id
 }

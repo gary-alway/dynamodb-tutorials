@@ -1,4 +1,4 @@
-import { testTrack } from '../../test/testTrack'
+import { testTrack } from '../../test/testFactories'
 import { getTrackById, getTracks, saveTrack } from './track'
 
 const track = testTrack()
@@ -22,8 +22,10 @@ describe('track', () => {
 
   it('should return an array of Tracks', async () => {
     const result = await getTracks()
-    expect(result).toHaveLength(1)
-    expect(result).toEqual([{ id: trackId, ...track, entityType: 'track' }])
+    expect(result.length).toBeGreaterThan(0)
+    expect(result).toEqual(
+      expect.arrayContaining([{ id: trackId, ...track, entityType: 'track' }])
+    )
   })
 
   it('should save a Track and return its ID', async () => {

@@ -1,16 +1,18 @@
 import { omit } from 'ramda'
-import { STUDENT_PREFIX, TRACK_PREFIX } from '../client'
+import {
+  COURSE_PREFIX,
+  GSI1_PK,
+  GSI1_SK,
+  SK,
+  STUDENT_PREFIX,
+  TRACK_PREFIX
+} from '../client'
 import {
   attributeMapToValues,
   removePrefix,
   attributeValueToValue
 } from '../utils'
-import { AttributeMap, Entity, Student, Track } from '../types'
-
-// const PK = 'pk'
-const SK = 'sk'
-const GSI1_PK = 'gsi1_pk'
-const GSI1_SK = 'gsi1_sk'
+import { AttributeMap, Course, Entity, Student, Track } from '../types'
 
 const dynamoRecordToStudent = (record: AttributeMap): Student => {
   const { pk, gsi1_pk, ...data } = record
@@ -31,6 +33,16 @@ const dynamoRecordToTrack = (record: AttributeMap) => {
   }) as unknown as Track
 }
 
+const dynamoRecordToCourse = (record: AttributeMap) => {
+  const { pk, sk, ...data } = record
+
+  return omit([GSI1_PK, GSI1_SK], {
+    ...attributeMapToValues(data),
+    id: removePrefix(attributeValueToValue<string>(sk), COURSE_PREFIX),
+    trackId: removePrefix(attributeValueToValue<string>(pk), TRACK_PREFIX)
+  }) as unknown as Course
+}
+
 export const dynamoRecordToEntity = <T extends Entity>(
   record: AttributeMap
 ): T => {
@@ -42,6 +54,8 @@ export const dynamoRecordToEntity = <T extends Entity>(
       return dynamoRecordToStudent(record) as T
     case 'track':
       return dynamoRecordToTrack(record) as T
+    case 'course':
+      return dynamoRecordToCourse(record) as T
     default:
       throw new Error(`Unknown entity type ${_entityType}`)
   }

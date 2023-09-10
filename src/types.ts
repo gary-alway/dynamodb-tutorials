@@ -14,6 +14,13 @@ export type Track = {
   name: string
 }
 
-export type Entity = Student | Track
+export type Course = {
+  id?: string
+  name: string
+  trackId: string
+  xp: number
+}
+
+export type Entity = Student | Track | Course
 
 export type AttributeMap = Record<string, AttributeValue>

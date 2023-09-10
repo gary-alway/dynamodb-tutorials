@@ -1,4 +1,4 @@
-import { testEmail, testStudent } from '../../test/testStudent'
+import { testEmail, testStudent } from '../../test/testFactories'
 import {
   deleteStudent,
   getStudentByEmail,

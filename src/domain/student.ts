@@ -139,9 +139,7 @@ export const getStudentByEmail = (email: string): Promise<Student | null> =>
     })
     .then(res =>
       valueOrNull<Student>(
-        head(
-          pathOr([], ['Items'], res).map(s => dynamoRecordToEntity<Student>(s))
-        )
+        head(pathOr([], ['Items'], res).map(dynamoRecordToEntity<Student>))
       )
     )
 
