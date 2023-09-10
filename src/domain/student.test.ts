@@ -1,3 +1,4 @@
+import { testEmail, testStudent } from '../../test/testStudent'
 import {
   deleteStudent,
   getStudentByEmail,
@@ -6,21 +7,14 @@ import {
   updateStudent,
   updateStudentXp
 } from './student'
-import { faker } from '@faker-js/faker'
 
-const firstName = faker.person.firstName()
-const lastName = faker.person.lastName()
-const email = faker.internet.email().toLocaleLowerCase()
+const student = testStudent()
 
 let studentId: string
 
 describe('Student', () => {
   beforeAll(async () => {
-    studentId = await saveStudent({
-      firstName,
-      lastName,
-      email
-    })
+    studentId = await saveStudent(student)
   })
 
   it('should get a student by id', async () => {
@@ -30,9 +24,7 @@ describe('Student', () => {
       entityType: 'student',
       xp: 0,
       id: studentId,
-      firstName,
-      lastName,
-      email
+      ...student
     })
   })
 
@@ -42,15 +34,12 @@ describe('Student', () => {
   })
 
   it('should get a student by email', async () => {
-    const student = await getStudentByEmail(email)
+    const result = await getStudentByEmail(student.email)
 
-    expect(student).toEqual({
+    expect(result).toEqual({
       entityType: 'student',
-      xp: 0,
       id: studentId,
-      firstName,
-      lastName,
-      email
+      ...student
     })
   })
 
@@ -60,11 +49,7 @@ describe('Student', () => {
   })
 
   it('should save a student', async () => {
-    const id = await saveStudent({
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      email: faker.internet.email().toLocaleLowerCase()
-    })
+    const id = await saveStudent(testStudent())
 
     expect(id).toBeDefined()
   })
@@ -76,11 +61,7 @@ describe('Student', () => {
   })
 
   it('should delete a student', async () => {
-    const id = await saveStudent({
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      email: faker.internet.email().toLocaleLowerCase()
-    })
+    const id = await saveStudent(testStudent())
 
     expect(id).toBeDefined()
 
@@ -91,11 +72,7 @@ describe('Student', () => {
   })
 
   it('should update a students first name', async () => {
-    const studentToUpdate = {
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      email: faker.internet.email().toLocaleLowerCase()
-    }
+    const studentToUpdate = testStudent()
 
     const id = await saveStudent(studentToUpdate)
 
@@ -113,11 +90,7 @@ describe('Student', () => {
   })
 
   it('should update a students last name', async () => {
-    const studentToUpdate = {
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      email: faker.internet.email().toLocaleLowerCase()
-    }
+    const studentToUpdate = testStudent()
 
     const id = await saveStudent(studentToUpdate)
 
@@ -135,15 +108,11 @@ describe('Student', () => {
   })
 
   it('should update a students email', async () => {
-    const studentToUpdate = {
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      email: faker.internet.email().toLocaleLowerCase()
-    }
+    const studentToUpdate = testStudent()
 
     const id = await saveStudent(studentToUpdate)
 
-    const newEmail = faker.internet.email().toLocaleLowerCase()
+    const newEmail = testEmail()
     await updateStudent({ id, email: newEmail })
     const student = await getStudentById(id)
 

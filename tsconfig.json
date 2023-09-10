@@ -6,7 +6,7 @@
     "strict": true,
     "declaration": true
   },
-  "include": ["src/**/*.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["tutorials/**/*.ts"],
   "files": ["global.d.ts"]
 }
