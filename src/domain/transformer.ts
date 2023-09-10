@@ -5,8 +5,7 @@ import {
   removePrefix,
   attributeValueToValue
 } from '../utils'
-import { AttributeValue } from '@aws-sdk/client-dynamodb'
-import { AttributeMap, Student, Track } from '../types'
+import { AttributeMap, Entity, Student, Track } from '../types'
 
 // const PK = 'pk'
 const SK = 'sk'
@@ -32,8 +31,8 @@ const dynamoRecordToTrack = (record: AttributeMap) => {
   }) as unknown as Track
 }
 
-export const dynamoRecordToEntity = <T extends Student | Track>(
-  record: Record<string, AttributeValue>
+export const dynamoRecordToEntity = <T extends Entity>(
+  record: AttributeMap
 ): T => {
   const { entityType } = record
   const _entityType = attributeValueToValue(entityType)
