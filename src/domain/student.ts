@@ -1,11 +1,11 @@
-import { head, pathOr } from "ramda";
-import { STUDENT_PREFIX, TABLE_NAME, dynamoClient } from "../client";
-import { v4 as uuidv4 } from "uuid";
-import { addPrefix, valueToAttributeValue } from "../utils";
-import { dynamoRecordToEntity } from "./transformer";
-import { AttributeValue } from "@aws-sdk/client-dynamodb";
+import { head, pathOr } from 'ramda'
+import { STUDENT_PREFIX, TABLE_NAME, dynamoClient } from '../client'
+import { v4 as uuidv4 } from 'uuid'
+import { addPrefix, valueToAttributeValue } from '../utils'
+import { dynamoRecordToEntity } from './transformer'
+import { AttributeValue } from '@aws-sdk/client-dynamodb'
 
-const entityType: EntityType = "student";
+const entityType: EntityType = 'student'
 
 export const getStudentById = (id: string): Promise<Student | null> =>
   dynamoClient
@@ -13,29 +13,29 @@ export const getStudentById = (id: string): Promise<Student | null> =>
       TableName: TABLE_NAME,
       Key: {
         pk: valueToAttributeValue(addPrefix(id, STUDENT_PREFIX)),
-        sk: valueToAttributeValue(addPrefix(id, STUDENT_PREFIX)),
-      },
+        sk: valueToAttributeValue(addPrefix(id, STUDENT_PREFIX))
+      }
     })
     .then(({ Item }) => {
       if (!Item) {
-        return null;
+        return null
       }
-      const _item = dynamoRecordToEntity(Item);
-      return _item.deleted ? null : _item;
-    });
+      const _item = dynamoRecordToEntity(Item)
+      return _item.deleted ? null : _item
+    })
 
 export const saveStudent = async ({
   firstName,
   lastName,
-  email,
+  email
 }: {
-  firstName: string;
-  lastName: string;
-  email: string;
+  firstName: string
+  lastName: string
+  email: string
 }): Promise<string> => {
-  const _id = uuidv4();
-  const _email = email.toLocaleLowerCase();
-  const xp = 0;
+  const _id = uuidv4()
+  const _email = email.toLocaleLowerCase()
+  const xp = 0
 
   await dynamoClient.putItem({
     TableName: TABLE_NAME,
@@ -47,117 +47,116 @@ export const saveStudent = async ({
       firstName: valueToAttributeValue(firstName),
       lastName: valueToAttributeValue(lastName),
       xp: valueToAttributeValue(xp),
-      entityType: valueToAttributeValue(entityType),
-    },
-  });
+      entityType: valueToAttributeValue(entityType)
+    }
+  })
 
-  return _id;
-};
+  return _id
+}
 
 export const updateStudent = async ({
   id,
   firstName,
   lastName,
-  email,
+  email
 }: {
-  id: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
+  id: string
+  firstName?: string
+  lastName?: string
+  email?: string
 }) => {
-  const updateExpressionParts = [];
-  const ExpressionAttributeValues: Record<string, AttributeValue> = {};
+  const updateExpressionParts = []
+  const ExpressionAttributeValues: Record<string, AttributeValue> = {}
 
   if (firstName !== undefined) {
-    updateExpressionParts.push("#firstName = :firstName");
-    ExpressionAttributeValues[":firstName"] = valueToAttributeValue(firstName);
+    updateExpressionParts.push('#firstName = :firstName')
+    ExpressionAttributeValues[':firstName'] = valueToAttributeValue(firstName)
   }
 
   if (lastName !== undefined) {
-    updateExpressionParts.push("#lastName = :lastName");
-    ExpressionAttributeValues[":lastName"] = valueToAttributeValue(lastName);
+    updateExpressionParts.push('#lastName = :lastName')
+    ExpressionAttributeValues[':lastName'] = valueToAttributeValue(lastName)
   }
 
   if (email !== undefined) {
-    updateExpressionParts.push("#gsi1_pk = :gsi1_pk");
-    ExpressionAttributeValues[":gsi1_pk"] = valueToAttributeValue(email);
+    updateExpressionParts.push('#gsi1_pk = :gsi1_pk')
+    ExpressionAttributeValues[':gsi1_pk'] = valueToAttributeValue(email)
   }
 
-  const UpdateExpression = `SET ${updateExpressionParts.join(", ")}`;
+  const UpdateExpression = `SET ${updateExpressionParts.join(', ')}`
 
   const ExpressionAttributeNames = {
-    ...(firstName && { "#firstName": "firstName" }),
-    ...(lastName && { "#lastName": "lastName" }),
-    ...(email && { "#gsi1_pk": "gsi1_pk" }),
-  };
+    ...(firstName && { '#firstName': 'firstName' }),
+    ...(lastName && { '#lastName': 'lastName' }),
+    ...(email && { '#gsi1_pk': 'gsi1_pk' })
+  }
 
   await dynamoClient.updateItem({
     TableName: TABLE_NAME,
     Key: {
       pk: valueToAttributeValue(addPrefix(id, STUDENT_PREFIX)),
-      sk: valueToAttributeValue(addPrefix(id, STUDENT_PREFIX)),
+      sk: valueToAttributeValue(addPrefix(id, STUDENT_PREFIX))
     },
     UpdateExpression,
     ExpressionAttributeNames,
-    ExpressionAttributeValues,
-  });
-};
+    ExpressionAttributeValues
+  })
+}
 
 export const deleteStudent = async (id: string) => {
   await dynamoClient.updateItem({
     TableName: TABLE_NAME,
     Key: {
       pk: valueToAttributeValue(addPrefix(id, STUDENT_PREFIX)),
-      sk: valueToAttributeValue(addPrefix(id, STUDENT_PREFIX)),
+      sk: valueToAttributeValue(addPrefix(id, STUDENT_PREFIX))
     },
-    UpdateExpression: "SET #deleted = :deleted",
+    UpdateExpression: 'SET #deleted = :deleted',
     ExpressionAttributeNames: {
-      "#deleted": "deleted",
+      '#deleted': 'deleted'
     },
     ExpressionAttributeValues: {
-      ":deleted": valueToAttributeValue(true),
-    },
-  });
-};
+      ':deleted': valueToAttributeValue(true)
+    }
+  })
+}
 
 export const getStudentByEmail = (email: string) =>
   dynamoClient
     .query({
       TableName: TABLE_NAME,
-      IndexName: "gsi1",
-      KeyConditionExpression: "#gsi1_pk = :gsi1_pk",
+      IndexName: 'gsi1',
+      KeyConditionExpression: '#gsi1_pk = :gsi1_pk',
       ExpressionAttributeNames: {
-        "#gsi1_pk": "gsi1_pk",
+        '#gsi1_pk': 'gsi1_pk'
       },
       ExpressionAttributeValues: {
-        ":gsi1_pk": {
-          S: email.toLocaleLowerCase(),
+        ':gsi1_pk': {
+          S: email.toLocaleLowerCase()
         },
-        ":notDeleted": {
-          BOOL: false,
-        },
+        ':notDeleted': {
+          BOOL: false
+        }
       },
-      FilterExpression:
-        "attribute_not_exists(deleted) OR deleted = :notDeleted",
+      FilterExpression: 'attribute_not_exists(deleted) OR deleted = :notDeleted'
     })
-    .then((res) => head(pathOr([], ["Items"], res).map(dynamoRecordToEntity)));
+    .then(res => head(pathOr([], ['Items'], res).map(dynamoRecordToEntity)))
 
 export const updateStudentXp = async ({
   id,
-  xp,
+  xp
 }: {
-  id: string;
-  xp: number;
+  id: string
+  xp: number
 }) => {
   await dynamoClient.updateItem({
     TableName: TABLE_NAME,
     Key: {
       pk: valueToAttributeValue(addPrefix(id, STUDENT_PREFIX)),
-      sk: valueToAttributeValue(addPrefix(id, STUDENT_PREFIX)),
+      sk: valueToAttributeValue(addPrefix(id, STUDENT_PREFIX))
     },
-    UpdateExpression: "set xp = xp + :inc",
+    UpdateExpression: 'set xp = xp + :inc',
     ExpressionAttributeValues: {
-      ":inc": valueToAttributeValue(xp),
-    },
-  });
-};
+      ':inc': valueToAttributeValue(xp)
+    }
+  })
+}

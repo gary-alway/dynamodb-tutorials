@@ -1,19 +1,19 @@
-import { AttributeValue, DynamoDB } from "@aws-sdk/client-dynamodb";
+import { AttributeValue, DynamoDB } from '@aws-sdk/client-dynamodb'
 
-export const TABLE_NAME = "demo-table";
-export const REGION = "eu-west-1";
+export const TABLE_NAME = 'demo-table'
+export const REGION = 'eu-west-1'
 
 export const dynamoClient = new DynamoDB({
   region: REGION,
-  endpoint: process.env.IS_OFFLINE ? "http://localhost:8000" : undefined,
-});
+  endpoint: process.env.IS_OFFLINE ? 'http://localhost:8000' : undefined
+})
 
-export const STUDENT_PREFIX = "student#";
+export const STUDENT_PREFIX = 'student#'
 
-type AttributeMap = Record<string, AttributeValue>;
+type AttributeMap = Record<string, AttributeValue>
 
 const getItemKeyAndValue = (item: AttributeMap, key?: string) =>
-  key ? { [`${key}`]: item[`${key}`] } : {};
+  key ? { [`${key}`]: item[`${key}`] } : {}
 
 export const truncateTable = async (
   client: DynamoDB,
@@ -21,16 +21,16 @@ export const truncateTable = async (
   hash: string,
   range?: string
 ): Promise<void> => {
-  const { Items } = await client.scan({ TableName });
+  const { Items } = await client.scan({ TableName })
   if (!Items) {
-    return;
+    return
   }
   const keys = Items.map((item: AttributeMap) => ({
     ...getItemKeyAndValue(item, hash),
-    ...getItemKeyAndValue(item, range),
-  }));
+    ...getItemKeyAndValue(item, range)
+  }))
   if (!keys.length) {
-    return;
+    return
   }
-  await Promise.all(keys?.map((Key) => client.deleteItem({ TableName, Key })));
-};
+  await Promise.all(keys?.map(Key => client.deleteItem({ TableName, Key })))
+}
