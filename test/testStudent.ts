@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+import { Student } from '../src/types'
 
 export const testEmail = () => faker.internet.email().toLocaleLowerCase()
 

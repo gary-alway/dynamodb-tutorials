@@ -1,4 +1,5 @@
-import { AttributeValue, DynamoDB } from '@aws-sdk/client-dynamodb'
+import { DynamoDB } from '@aws-sdk/client-dynamodb'
+import { AttributeMap } from './types'
 
 export const TABLE_NAME = 'demo-table'
 export const REGION = 'eu-west-1'
@@ -9,8 +10,7 @@ export const dynamoClient = new DynamoDB({
 })
 
 export const STUDENT_PREFIX = 'student#'
-
-type AttributeMap = Record<string, AttributeValue>
+export const TRACK_PREFIX = 'track#'
 
 const getItemKeyAndValue = (item: AttributeMap, key?: string) =>
   key ? { [`${key}`]: item[`${key}`] } : {}

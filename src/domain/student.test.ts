@@ -45,7 +45,7 @@ describe('Student', () => {
 
   it('should return null when getting a student by non-existent email', async () => {
     const student = await getStudentByEmail('non-existent-email')
-    expect(student).toBeUndefined()
+    expect(student).toBeNull()
   })
 
   it('should save a student', async () => {

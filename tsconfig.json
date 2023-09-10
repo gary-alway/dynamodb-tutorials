@@ -7,6 +7,5 @@
     "declaration": true
   },
   "include": ["**/*.ts"],
-  "exclude": ["tutorials/**/*.ts"],
-  "files": ["global.d.ts"]
+  "exclude": ["tutorials/**/*.ts"]
 }

@@ -1,4 +1,5 @@
 import { AttributeValue } from '@aws-sdk/client-dynamodb'
+import { AttributeMap } from './types'
 
 export const valueToAttributeValue = <T>(value: T): AttributeValue => {
   switch (typeof value) {
@@ -13,7 +14,7 @@ export const valueToAttributeValue = <T>(value: T): AttributeValue => {
         return { L: value.map(item => valueToAttributeValue(item)) }
       }
       return {
-        M: Object.entries(value as Record<string, AttributeValue>).reduce(
+        M: Object.entries(value as AttributeMap).reduce(
           (acc, [key, item]) => ({
             ...acc,
             [key]: valueToAttributeValue(item)
@@ -46,9 +47,7 @@ export const attributeValueToValue = <T>(value: AttributeValue): T => {
   }
 }
 
-export const attributeMapToValues = (
-  items: Record<string, AttributeValue>
-): unknown[] =>
+export const attributeMapToValues = (items: AttributeMap): unknown[] =>
   Object.keys(items).reduce(
     (acc, key) => ({
       ...acc,
@@ -62,3 +61,5 @@ export const removePrefix = (id: string, prefix: string): string =>
 
 export const addPrefix = (id: string, prefix: string): string =>
   `${prefix}${removePrefix(id, prefix)}`
+
+export const valueOrNull = <T>(value: T | undefined): T | null => value || null

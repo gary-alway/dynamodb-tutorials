@@ -1,11 +1,9 @@
 import { head, pathOr } from 'ramda'
 import { STUDENT_PREFIX, TABLE_NAME, dynamoClient } from '../client'
 import { v4 as uuidv4 } from 'uuid'
-import { addPrefix, valueToAttributeValue } from '../utils'
+import { addPrefix, valueOrNull, valueToAttributeValue } from '../utils'
 import { dynamoRecordToEntity } from './transformer'
-import { AttributeValue } from '@aws-sdk/client-dynamodb'
-
-const entityType: EntityType = 'student'
+import { Student, AttributeMap } from '../types'
 
 export const getStudentById = (id: string): Promise<Student | null> =>
   dynamoClient
@@ -20,7 +18,7 @@ export const getStudentById = (id: string): Promise<Student | null> =>
       if (!Item) {
         return null
       }
-      const _item = dynamoRecordToEntity(Item)
+      const _item = dynamoRecordToEntity<Student>(Item)
       return _item.deleted ? null : _item
     })
 
@@ -47,7 +45,7 @@ export const saveStudent = async ({
       firstName: valueToAttributeValue(firstName),
       lastName: valueToAttributeValue(lastName),
       xp: valueToAttributeValue(xp),
-      entityType: valueToAttributeValue(entityType)
+      entityType: valueToAttributeValue('student')
     }
   })
 
@@ -64,9 +62,9 @@ export const updateStudent = async ({
   firstName?: string
   lastName?: string
   email?: string
-}) => {
+}): Promise<void> => {
   const updateExpressionParts = []
-  const ExpressionAttributeValues: Record<string, AttributeValue> = {}
+  const ExpressionAttributeValues: AttributeMap = {}
 
   if (firstName !== undefined) {
     updateExpressionParts.push('#firstName = :firstName')
@@ -103,7 +101,7 @@ export const updateStudent = async ({
   })
 }
 
-export const deleteStudent = async (id: string) => {
+export const deleteStudent = async (id: string): Promise<void> => {
   await dynamoClient.updateItem({
     TableName: TABLE_NAME,
     Key: {
@@ -120,7 +118,7 @@ export const deleteStudent = async (id: string) => {
   })
 }
 
-export const getStudentByEmail = (email: string) =>
+export const getStudentByEmail = (email: string): Promise<Student | null> =>
   dynamoClient
     .query({
       TableName: TABLE_NAME,
@@ -139,7 +137,13 @@ export const getStudentByEmail = (email: string) =>
       },
       FilterExpression: 'attribute_not_exists(deleted) OR deleted = :notDeleted'
     })
-    .then(res => head(pathOr([], ['Items'], res).map(dynamoRecordToEntity)))
+    .then(res =>
+      valueOrNull<Student>(
+        head(
+          pathOr([], ['Items'], res).map(s => dynamoRecordToEntity<Student>(s))
+        )
+      )
+    )
 
 export const updateStudentXp = async ({
   id,
@@ -147,7 +151,7 @@ export const updateStudentXp = async ({
 }: {
   id: string
   xp: number
-}) => {
+}): Promise<void> => {
   await dynamoClient.updateItem({
     TableName: TABLE_NAME,
     Key: {
