@@ -13,7 +13,7 @@ export const valueToAttributeValue = <T>(value: T): AttributeValue => {
         return { L: value.map((item) => valueToAttributeValue(item)) };
       }
       return {
-        M: Object.entries(value as any).reduce(
+        M: Object.entries(value as Record<string, AttributeValue>).reduce(
           (acc, [key, item]) => ({
             ...acc,
             [key]: valueToAttributeValue(item),

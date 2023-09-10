@@ -1,25 +1,11 @@
-import { head, omit, pathOr } from "ramda";
+import { head, pathOr } from "ramda";
 import { STUDENT_PREFIX, TABLE_NAME, dynamoClient } from "../client";
 import { v4 as uuidv4 } from "uuid";
-import {
-  addPrefix,
-  attributeMapToValues,
-  attributeValueToValue,
-  removePrefix,
-  valueToAttributeValue,
-} from "../utils";
+import { addPrefix, valueToAttributeValue } from "../utils";
+import { dynamoRecordToEntity } from "./transformer";
+import { AttributeValue } from "@aws-sdk/client-dynamodb";
 
-const entityType = "student";
-
-export const dynamoRecordToStudent = (record: any): Student => {
-  const { pk, gsi1_pk, ...data } = record;
-
-  return omit(["sk", "gsi1_sk"], {
-    ...attributeMapToValues(data),
-    id: removePrefix(attributeValueToValue<string>(pk), STUDENT_PREFIX),
-    email: attributeValueToValue<string>(gsi1_pk),
-  }) as unknown as Student;
-};
+const entityType: EntityType = "student";
 
 export const getStudentById = (id: string): Promise<Student | null> =>
   dynamoClient
@@ -34,7 +20,7 @@ export const getStudentById = (id: string): Promise<Student | null> =>
       if (!Item) {
         return null;
       }
-      const _item = dynamoRecordToStudent(Item);
+      const _item = dynamoRecordToEntity(Item);
       return _item.deleted ? null : _item;
     });
 
@@ -80,7 +66,7 @@ export const updateStudent = async ({
   email?: string;
 }) => {
   const updateExpressionParts = [];
-  const ExpressionAttributeValues: Record<string, any> = {};
+  const ExpressionAttributeValues: Record<string, AttributeValue> = {};
 
   if (firstName !== undefined) {
     updateExpressionParts.push("#firstName = :firstName");
@@ -154,7 +140,7 @@ export const getStudentByEmail = (email: string) =>
       FilterExpression:
         "attribute_not_exists(deleted) OR deleted = :notDeleted",
     })
-    .then((res) => head(pathOr([], ["Items"], res).map(dynamoRecordToStudent)));
+    .then((res) => head(pathOr([], ["Items"], res).map(dynamoRecordToEntity)));
 
 export const updateStudentXp = async ({
   id,

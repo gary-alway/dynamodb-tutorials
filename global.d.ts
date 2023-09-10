@@ -6,3 +6,5 @@ declare type Student = {
   xp: number;
   deleted?: boolean;
 };
+
+declare type EntityType = "student";
