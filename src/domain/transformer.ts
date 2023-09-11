@@ -2,14 +2,9 @@ import { omit } from 'ramda'
 import {
   CHAPTER_PREFIX,
   COURSE_PREFIX,
-  GSI1_PK,
-  GSI1_SK,
-  GSI2_PK,
-  GSI2_SK,
-  SK,
   STUDENT_PREFIX,
   TRACK_PREFIX
-} from '../client'
+} from '../types'
 import {
   attributeMapToValues,
   removePrefix,
@@ -18,12 +13,19 @@ import {
 import {
   AttributeMap,
   Chapter,
+  ChapterProgress,
   Course,
   CourseProgress,
   Entity,
   Student,
   Track
 } from '../types'
+
+const SK = 'sk'
+const GSI1_PK = 'gsi1_pk'
+const GSI1_SK = 'gsi1_sk'
+const GSI2_PK = 'gsi2_pk'
+const GSI2_SK = 'gsi2_sk'
 
 const dynamoRecordToStudent = (record: AttributeMap): Student => {
   const { pk, gsi1_pk, ...data } = record
@@ -78,19 +80,30 @@ const dynamoRecordToCourseProgress = (record: AttributeMap) => {
   } as unknown as CourseProgress
 }
 
+const dynamoRecordToChapterProgress = (record: AttributeMap) => {
+  const { pk, sk, ...data } = record
+
+  return {
+    ...attributeMapToValues(data),
+    studentId: removePrefix(attributeValueToValue<string>(pk), STUDENT_PREFIX),
+    chapterId: removePrefix(attributeValueToValue<string>(sk), CHAPTER_PREFIX)
+  } as unknown as ChapterProgress
+}
+
 const entityTransformMap: Record<string, (record: AttributeMap) => Entity> = {
   student: dynamoRecordToStudent,
   track: dynamoRecordToTrack,
   course: dynamoRecordToCourse,
   chapter: dynamoRecordToChapter,
-  course_progress: dynamoRecordToCourseProgress
+  course_progress: dynamoRecordToCourseProgress,
+  chapter_progress: dynamoRecordToChapterProgress
 }
 
 export const dynamoRecordToEntity = <T extends Entity>(
   record: AttributeMap
 ): T => {
   const { entityType } = record
-  const _entityType: string = attributeValueToValue(entityType)
+  const _entityType = attributeValueToValue<string>(entityType)
   const transformer = entityTransformMap[_entityType]
 
   if (!transformer) {

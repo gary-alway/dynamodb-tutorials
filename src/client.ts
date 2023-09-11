@@ -9,18 +9,6 @@ export const dynamoClient = new DynamoDB({
   endpoint: process.env.IS_OFFLINE ? 'http://localhost:8000' : undefined
 })
 
-export const STUDENT_PREFIX = 'student#'
-export const TRACK_PREFIX = 'track#'
-export const COURSE_PREFIX = 'course#'
-export const CHAPTER_PREFIX = 'chapter#'
-
-export const PK = 'pk'
-export const SK = 'sk'
-export const GSI1_PK = 'gsi1_pk'
-export const GSI1_SK = 'gsi1_sk'
-export const GSI2_PK = 'gsi2_pk'
-export const GSI2_SK = 'gsi2_sk'
-
 const getItemKeyAndValue = (item: AttributeMap, key?: string) =>
   key ? { [`${key}`]: item[`${key}`] } : {}
 

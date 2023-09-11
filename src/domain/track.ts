@@ -1,9 +1,9 @@
 import { pathOr } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
 import { addPrefix, valueToAttributeValue } from '../utils'
-import { TABLE_NAME, TRACK_PREFIX, dynamoClient as client } from '../client'
+import { TABLE_NAME, dynamoClient as client } from '../client'
 import { dynamoRecordToEntity } from './transformer'
-import { Track } from '../types'
+import { TRACK_PREFIX, Track } from '../types'
 
 const entityType = 'track'
 

@@ -1,14 +1,9 @@
 import { head, pathOr } from 'ramda'
-import {
-  COURSE_PREFIX,
-  TABLE_NAME,
-  TRACK_PREFIX,
-  dynamoClient
-} from '../client'
+import { TABLE_NAME, dynamoClient } from '../client'
 import { valueToAttributeValue, addPrefix, valueOrNull } from '../utils'
 import { v4 as uuidv4 } from 'uuid'
 import { dynamoRecordToEntity } from './transformer'
-import { Course } from '../types'
+import { COURSE_PREFIX, Course, TRACK_PREFIX } from '../types'
 
 export const getCourseById = async (id: string): Promise<Course | null> =>
   dynamoClient
