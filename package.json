@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node --project tsconfig.json src/index.ts",
+    "truncate": "ts-node --project tsconfig.json src/truncate-table.ts",
     "test": "IS_OFFLINE=true jest --coverage",
     "type-check": "tsc --noEmit",
     "prepare": "husky install",

@@ -5,12 +5,7 @@ import {
   TRACK_PREFIX,
   dynamoClient
 } from '../client'
-import {
-  removePrefix,
-  valueToAttributeValue,
-  addPrefix,
-  valueOrNull
-} from '../utils'
+import { valueToAttributeValue, addPrefix, valueOrNull } from '../utils'
 import { v4 as uuidv4 } from 'uuid'
 import { dynamoRecordToEntity } from './transformer'
 import { Course } from '../types'
@@ -27,9 +22,7 @@ export const getCourseById = async (id: string): Promise<Course | null> =>
         '#gsi1_sk': 'gsi1_sk'
       },
       ExpressionAttributeValues: {
-        ':gsi1_pk': valueToAttributeValue(
-          addPrefix(removePrefix(id, COURSE_PREFIX), COURSE_PREFIX)
-        ),
+        ':gsi1_pk': valueToAttributeValue(addPrefix(id, COURSE_PREFIX)),
         ':gsi1_sk': valueToAttributeValue(TRACK_PREFIX)
       }
     })
@@ -67,15 +60,14 @@ export const saveCourse = async ({
   xp: number
 }): Promise<string> => {
   const id = uuidv4()
-  const _trackId = removePrefix(trackId, TRACK_PREFIX)
 
   await dynamoClient.putItem({
     TableName: TABLE_NAME,
     Item: {
-      pk: valueToAttributeValue(addPrefix(_trackId, TRACK_PREFIX)),
+      pk: valueToAttributeValue(addPrefix(trackId, TRACK_PREFIX)),
       sk: valueToAttributeValue(addPrefix(id, COURSE_PREFIX)),
       gsi1_pk: valueToAttributeValue(addPrefix(id, COURSE_PREFIX)),
-      gsi1_sk: valueToAttributeValue(addPrefix(_trackId, TRACK_PREFIX)),
+      gsi1_sk: valueToAttributeValue(addPrefix(trackId, TRACK_PREFIX)),
       name: valueToAttributeValue(name),
       xp: valueToAttributeValue(xp),
       entityType: valueToAttributeValue('course')

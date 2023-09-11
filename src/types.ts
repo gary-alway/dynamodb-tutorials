@@ -12,6 +12,7 @@ export type Student = {
 export type Track = {
   id?: string
   name: string
+  // todo: add XP reward for track completion
 }
 
 export type Course = {
@@ -21,6 +22,14 @@ export type Course = {
   xp: number
 }
 
-export type Entity = Student | Track | Course
+export type Chapter = {
+  id?: string
+  name: string
+  trackId: string
+  courseId: string
+  xp: number
+}
+
+export type Entity = Student | Track | Course | Chapter
 
 export type AttributeMap = Record<string, AttributeValue>

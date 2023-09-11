@@ -1,5 +1,13 @@
 import { faker } from '@faker-js/faker'
-import { Course, Track, Student } from '../src/types'
+import { Course, Track, Student, Chapter } from '../src/types'
+
+export const testChapter = (overrides: Partial<Chapter> = {}): Chapter => ({
+  name: faker.company.buzzPhrase(),
+  xp: faker.number.int(),
+  courseId: faker.string.uuid(),
+  trackId: faker.string.uuid(),
+  ...overrides
+})
 
 export const testCourse = (overrides: Partial<Course> = {}): Course => ({
   name: faker.company.buzzPhrase(),
