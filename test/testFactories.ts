@@ -28,5 +28,6 @@ export const testStudent = (overrides: Partial<Student> = {}): Student => ({
 
 export const testTrack = (overrides: Partial<Track> = {}): Track => ({
   name: faker.company.buzzAdjective(),
+  xp: faker.number.int(),
   ...overrides
 })

@@ -28,7 +28,7 @@ let chapterId: string
 describe('progress', () => {
   beforeAll(async () => {
     studentId = await saveStudent(student)
-    trackId = await saveTrack(track.name)
+    trackId = await saveTrack(track)
     courseId = await saveCourse({ ...course, trackId })
     chapterId = await saveChapter({ ...chapter, courseId })
   })

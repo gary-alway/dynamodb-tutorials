@@ -12,7 +12,7 @@ export type Student = {
 export type Track = {
   id?: string
   name: string
-  // todo: add XP reward for track completion
+  xp: number
 }
 
 export type Course = {

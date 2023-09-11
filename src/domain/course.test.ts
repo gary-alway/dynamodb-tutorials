@@ -12,7 +12,7 @@ let trackId: string
 
 describe('course', () => {
   beforeAll(async () => {
-    trackId = await saveTrack(track.name)
+    trackId = await saveTrack(track)
     courseId1 = await saveCourse({ ...course1, trackId })
     courseId2 = await saveCourse({ ...course2, trackId })
   })
