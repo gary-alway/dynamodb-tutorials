@@ -15,7 +15,15 @@ import {
   removePrefix,
   attributeValueToValue
 } from '../utils'
-import { AttributeMap, Chapter, Course, Entity, Student, Track } from '../types'
+import {
+  AttributeMap,
+  Chapter,
+  Course,
+  CourseProgress,
+  Entity,
+  Student,
+  Track
+} from '../types'
 
 const dynamoRecordToStudent = (record: AttributeMap): Student => {
   const { pk, gsi1_pk, ...data } = record
@@ -60,6 +68,16 @@ const dynamoRecordToChapter = (record: AttributeMap) => {
   }) as unknown as Chapter
 }
 
+const dynamoRecordToCourseProgress = (record: AttributeMap) => {
+  const { pk, sk, ...data } = record
+
+  return {
+    ...attributeMapToValues(data),
+    studentId: removePrefix(attributeValueToValue<string>(pk), STUDENT_PREFIX),
+    courseId: removePrefix(attributeValueToValue<string>(sk), COURSE_PREFIX)
+  } as unknown as CourseProgress
+}
+
 export const dynamoRecordToEntity = <T extends Entity>(
   record: AttributeMap
 ): T => {
@@ -75,6 +93,8 @@ export const dynamoRecordToEntity = <T extends Entity>(
       return dynamoRecordToCourse(record) as T
     case 'chapter':
       return dynamoRecordToChapter(record) as T
+    case 'course_progress':
+      return dynamoRecordToCourseProgress(record) as T
     default:
       throw new Error(`Unknown entity type ${_entityType}`)
   }

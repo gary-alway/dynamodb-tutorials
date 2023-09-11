@@ -30,6 +30,12 @@ export type Chapter = {
   xp: number
 }
 
-export type Entity = Student | Track | Course | Chapter
+export type CourseProgress = {
+  studentId: string
+  courseId: string
+  percent: number
+}
+
+export type Entity = Student | Track | Course | Chapter | CourseProgress
 
 export type AttributeMap = Record<string, AttributeValue>
