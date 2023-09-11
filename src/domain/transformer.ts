@@ -78,24 +78,24 @@ const dynamoRecordToCourseProgress = (record: AttributeMap) => {
   } as unknown as CourseProgress
 }
 
+const entityTransformMap: Record<string, (record: AttributeMap) => Entity> = {
+  student: dynamoRecordToStudent,
+  track: dynamoRecordToTrack,
+  course: dynamoRecordToCourse,
+  chapter: dynamoRecordToChapter,
+  course_progress: dynamoRecordToCourseProgress
+}
+
 export const dynamoRecordToEntity = <T extends Entity>(
   record: AttributeMap
 ): T => {
   const { entityType } = record
-  const _entityType = attributeValueToValue(entityType)
+  const _entityType: string = attributeValueToValue(entityType)
+  const transformer = entityTransformMap[_entityType]
 
-  switch (_entityType) {
-    case 'student':
-      return dynamoRecordToStudent(record) as T
-    case 'track':
-      return dynamoRecordToTrack(record) as T
-    case 'course':
-      return dynamoRecordToCourse(record) as T
-    case 'chapter':
-      return dynamoRecordToChapter(record) as T
-    case 'course_progress':
-      return dynamoRecordToCourseProgress(record) as T
-    default:
-      throw new Error(`Unknown entity type ${_entityType}`)
+  if (!transformer) {
+    throw new Error(`Unknown entity type: ${_entityType}`)
   }
+
+  return entityTransformMap[_entityType](record) as T
 }

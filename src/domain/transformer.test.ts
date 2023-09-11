@@ -8,6 +8,6 @@ describe('dynamoRecordToEntity', () => {
 
     const fn = () => dynamoRecordToEntity(unknownRecord)
 
-    expect(fn).toThrowError('Unknown entity type unknown-type')
+    expect(fn).toThrowError('Unknown entity type: unknown-type')
   })
 })
