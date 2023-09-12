@@ -17,3 +17,9 @@
 [Code](./tutorials/tutorial-3-single-table-design) _This tutorial uses a slightly different codebase but the concepts are the same_
 
 [Article](https://www.datacamp.com/tutorial/single-table-database-design-with-dynamodb)
+
+## Tutorial 4 - streams
+
+[Code](./tutorials/tutorial-4-streams)
+
+[Article](https://www.datacamp.com/tutorial/dynamodb-streams)

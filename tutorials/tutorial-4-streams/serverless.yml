@@ -1,0 +1,32 @@
+service: demo-service
+
+plugins:
+  - serverless-plugin-typescript
+
+provider:
+  stage: prod
+  name: aws
+  runtime: nodejs18.x
+  memorySize: 256
+  timeout: 30
+  region: eu-west-1
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - 'arn:aws:dynamodb:eu-west-1:137374389243:table/demo-table'
+        - 'arn:aws:dynamodb:eu-west-1:137374389243:table/demo-table/index/*'
+
+functions:
+  stream:
+    handler: src/lambda/stream.handler
+    events:
+      - stream:
+          enabled: true
+          type: dynamodb
+          arn: 'arn:aws:dynamodb:eu-west-1:137374389243:table/demo-table/stream/2023-09-12T18:22:39.142'
