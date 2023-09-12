@@ -6,14 +6,16 @@ export const testChapter = (overrides: Partial<Chapter> = {}): Chapter => ({
   xp: faker.number.int(),
   courseId: faker.string.uuid(),
   trackId: faker.string.uuid(),
-  ...overrides
+  ...overrides,
+  entityType: 'chapter'
 })
 
 export const testCourse = (overrides: Partial<Course> = {}): Course => ({
   name: faker.company.buzzPhrase(),
   xp: faker.number.int(),
   trackId: faker.string.uuid(),
-  ...overrides
+  ...overrides,
+  entityType: 'course'
 })
 
 export const testEmail = () => faker.internet.email().toLocaleLowerCase()
@@ -23,11 +25,13 @@ export const testStudent = (overrides: Partial<Student> = {}): Student => ({
   lastName: faker.person.lastName(),
   email: testEmail(),
   xp: 0,
-  ...overrides
+  ...overrides,
+  entityType: 'student'
 })
 
 export const testTrack = (overrides: Partial<Track> = {}): Track => ({
   name: faker.company.buzzAdjective(),
   xp: faker.number.int(),
-  ...overrides
+  ...overrides,
+  entityType: 'track'
 })

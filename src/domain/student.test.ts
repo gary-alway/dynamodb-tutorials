@@ -37,7 +37,6 @@ describe('Student', () => {
     const result = await getStudentByEmail(student.email)
 
     expect(result).toEqual({
-      entityType: 'student',
       id: studentId,
       ...student
     })

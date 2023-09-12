@@ -1,7 +1,11 @@
 import { AttributeValue } from '@aws-sdk/client-dynamodb'
 
-export type Student = {
+type EntityType = {
+  entityType: string
   id?: string
+}
+
+export type Student = EntityType & {
   firstName: string
   lastName: string
   email: string
@@ -9,34 +13,31 @@ export type Student = {
   deleted?: boolean
 }
 
-export type Track = {
-  id?: string
+export type Track = EntityType & {
   name: string
   xp: number
 }
 
-export type Course = {
-  id?: string
+export type Course = EntityType & {
   name: string
   trackId: string
   xp: number
 }
 
-export type Chapter = {
-  id?: string
+export type Chapter = EntityType & {
   name: string
   trackId: string
   courseId: string
   xp: number
 }
 
-export type CourseProgress = {
+export type CourseProgress = Omit<EntityType, 'id'> & {
   studentId: string
   courseId: string
   percent: number
 }
 
-export type ChapterProgress = {
+export type ChapterProgress = Omit<EntityType, 'id'> & {
   studentId: string
   chapterId: string
   percent: number
