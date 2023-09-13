@@ -1,4 +1,5 @@
 import { testEmail, testStudent } from '../../test/testFactories'
+import { ENTITY_TYPES } from '../types'
 import {
   deleteStudent,
   getStudentByEmail,
@@ -21,7 +22,6 @@ describe('Student', () => {
     const student = await getStudentById(studentId)
 
     expect(student).toEqual({
-      entityType: 'student',
       xp: 0,
       id: studentId,
       ...student
@@ -79,7 +79,7 @@ describe('Student', () => {
     const student = await getStudentById(id)
 
     expect(student).toEqual({
-      entityType: 'student',
+      entityType: ENTITY_TYPES.student,
       xp: 0,
       id,
       firstName: 'new first name',
@@ -97,7 +97,7 @@ describe('Student', () => {
     const student = await getStudentById(id)
 
     expect(student).toEqual({
-      entityType: 'student',
+      entityType: ENTITY_TYPES.student,
       xp: 0,
       id,
       firstName: studentToUpdate.firstName,
@@ -116,7 +116,7 @@ describe('Student', () => {
     const student = await getStudentById(id)
 
     expect(student).toEqual({
-      entityType: 'student',
+      entityType: ENTITY_TYPES.student,
       xp: 0,
       id,
       firstName: studentToUpdate.firstName,

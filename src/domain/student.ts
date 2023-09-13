@@ -3,7 +3,7 @@ import { TABLE_NAME, dynamoClient } from '../client'
 import { v4 as uuidv4 } from 'uuid'
 import { addPrefix, valueOrNull, valueToAttributeValue } from '../utils'
 import { dynamoRecordToEntity } from './transformer'
-import { Student, AttributeMap, STUDENT_PREFIX } from '../types'
+import { Student, AttributeMap, STUDENT_PREFIX, ENTITY_TYPES } from '../types'
 
 export const getStudentById = (id: string): Promise<Student | null> =>
   dynamoClient
@@ -45,7 +45,7 @@ export const saveStudent = async ({
       firstName: valueToAttributeValue(firstName),
       lastName: valueToAttributeValue(lastName),
       xp: valueToAttributeValue(xp),
-      entityType: valueToAttributeValue('student')
+      entityType: valueToAttributeValue(ENTITY_TYPES.student)
     }
   })
 

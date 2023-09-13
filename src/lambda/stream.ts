@@ -1,7 +1,12 @@
 import { DynamoDBStreamEvent, DynamoDBRecord, Handler } from 'aws-lambda'
 import { updateStudentXp } from '../domain/student'
 
-import { AttributeMap, ChapterProgress, CourseProgress } from '../types'
+import {
+  AttributeMap,
+  ChapterProgress,
+  CourseProgress,
+  ENTITY_TYPES
+} from '../types'
 import { dynamoRecordToEntity } from '../domain/transformer'
 import { getChapterById } from '../domain/chapter'
 import { getCourseById } from '../domain/course'
@@ -16,7 +21,7 @@ const processRecord = async (record: DynamoDBRecord) => {
           record.dynamodb?.NewImage as AttributeMap
         )
 
-        if (entity.entityType === 'chapter_progress') {
+        if (entity.entityType === ENTITY_TYPES.chapter_progress) {
           const { studentId, chapterId, percent } = entity as ChapterProgress
 
           if (percent !== 100) {
@@ -32,7 +37,7 @@ const processRecord = async (record: DynamoDBRecord) => {
           }
         }
 
-        if (entity.entityType === 'course_progress') {
+        if (entity.entityType === ENTITY_TYPES.course_progress) {
           const { studentId, courseId, percent } = entity as CourseProgress
 
           if (percent !== 100) {

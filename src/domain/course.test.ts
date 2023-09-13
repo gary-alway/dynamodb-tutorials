@@ -22,8 +22,7 @@ describe('course', () => {
     expect(result).toEqual({
       id: courseId1,
       ...course1,
-      trackId,
-      entityType: 'course'
+      trackId
     })
   })
 
@@ -40,14 +39,12 @@ describe('course', () => {
         {
           id: courseId1,
           ...course1,
-          trackId,
-          entityType: 'course'
+          trackId
         },
         {
           id: courseId2,
           ...course2,
-          trackId,
-          entityType: 'course'
+          trackId
         }
       ])
     )

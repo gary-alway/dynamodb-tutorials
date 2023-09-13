@@ -3,9 +3,9 @@ import { v4 as uuidv4 } from 'uuid'
 import { addPrefix, valueToAttributeValue } from '../utils'
 import { TABLE_NAME, dynamoClient as client } from '../client'
 import { dynamoRecordToEntity } from './transformer'
-import { TRACK_PREFIX, Track } from '../types'
+import { ENTITY_TYPES, TRACK_PREFIX, Track } from '../types'
 
-const entityType = 'track'
+const entityType = ENTITY_TYPES.track
 
 export const getTrackById = async (id: string): Promise<Track | null> =>
   client

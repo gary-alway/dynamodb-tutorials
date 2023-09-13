@@ -3,7 +3,13 @@ import { TABLE_NAME, dynamoClient } from '../client'
 import { valueToAttributeValue, addPrefix, valueOrNull } from '../utils'
 import { v4 as uuidv4 } from 'uuid'
 import { dynamoRecordToEntity } from './transformer'
-import { CHAPTER_PREFIX, COURSE_PREFIX, Chapter, TRACK_PREFIX } from '../types'
+import {
+  CHAPTER_PREFIX,
+  COURSE_PREFIX,
+  Chapter,
+  ENTITY_TYPES,
+  TRACK_PREFIX
+} from '../types'
 import { getCourseById } from './course'
 
 export const getChapterById = async (id: string): Promise<Chapter | null> =>
@@ -78,7 +84,7 @@ export const saveChapter = async ({
       gsi2_sk: valueToAttributeValue(addPrefix(id, CHAPTER_PREFIX)),
       name: valueToAttributeValue(name),
       xp: valueToAttributeValue(xp),
-      entityType: valueToAttributeValue('chapter')
+      entityType: valueToAttributeValue(ENTITY_TYPES.chapter)
     }
   })
 

@@ -1,7 +1,18 @@
 import { AttributeValue } from '@aws-sdk/client-dynamodb'
 
+export const ENTITY_TYPES = {
+  student: 'student',
+  track: 'track',
+  course: 'course',
+  chapter: 'chapter',
+  course_progress: 'course_progress',
+  chapter_progress: 'chapter_progress'
+}
+
+export type EntityName = keyof typeof ENTITY_TYPES
+
 type EntityType = {
-  entityType: string
+  entityType: EntityName
   id?: string
 }
 

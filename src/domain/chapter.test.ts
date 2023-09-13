@@ -30,8 +30,7 @@ describe('chapter', () => {
       id: chapterId1,
       ...chapter1,
       courseId,
-      trackId,
-      entityType: 'chapter'
+      trackId
     })
   })
 
@@ -49,15 +48,13 @@ describe('chapter', () => {
           id: chapterId1,
           ...chapter1,
           courseId,
-          trackId,
-          entityType: 'chapter'
+          trackId
         },
         {
           id: chapterId2,
           ...chapter2,
           courseId,
-          trackId,
-          entityType: 'chapter'
+          trackId
         }
       ])
     )

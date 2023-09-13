@@ -7,6 +7,7 @@ import {
   COURSE_PREFIX,
   ChapterProgress,
   CourseProgress,
+  ENTITY_TYPES,
   STUDENT_PREFIX
 } from '../types'
 import { getChapterById } from './chapter'
@@ -50,7 +51,7 @@ export const saveCourseProgress = async ({
     Item: {
       pk: valueToAttributeValue(addPrefix(studentId, STUDENT_PREFIX)),
       sk: valueToAttributeValue(addPrefix(courseId, COURSE_PREFIX)),
-      entityType: valueToAttributeValue('course_progress'),
+      entityType: valueToAttributeValue(ENTITY_TYPES.course_progress),
       percent: valueToAttributeValue<number>(percent)
     }
   })
@@ -93,7 +94,7 @@ export const chapterComplete = async ({
     Item: {
       pk: valueToAttributeValue(addPrefix(studentId, STUDENT_PREFIX)),
       sk: valueToAttributeValue(addPrefix(chapterId, CHAPTER_PREFIX)),
-      entityType: valueToAttributeValue('chapter_progress'),
+      entityType: valueToAttributeValue(ENTITY_TYPES.chapter_progress),
       percent: valueToAttributeValue(100)
     }
   })
