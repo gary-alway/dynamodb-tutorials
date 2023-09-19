@@ -1,62 +1,48 @@
 import { DynamoDBStreamEvent, DynamoDBRecord, Handler } from 'aws-lambda'
-import { updateStudentXp } from '../domain/student'
 
-import {
-  AttributeMap,
-  ChapterProgress,
-  CourseProgress,
-  ENTITY_TYPES
-} from '../types'
+import { AttributeMap, isIndexableEntity, isProgressEntity } from '../types'
 import { dynamoRecordToEntity } from '../domain/transformer'
-import { getChapterById } from '../domain/chapter'
-import { getCourseById } from '../domain/course'
+import { updateStudentProgress } from '../domain/progress'
+import {
+  deleteAlgoliaObject,
+  getAlgoliaIndex,
+  saveAlgoliaObject
+} from '../clients/algolia-client'
+import { SearchIndex } from 'algoliasearch'
 
-const processRecord = async (record: DynamoDBRecord) => {
-  switch (record.eventName) {
-    case 'REMOVE':
-      break
-    default:
-      if (record.dynamodb?.NewImage) {
-        const entity = dynamoRecordToEntity(
-          record.dynamodb?.NewImage as AttributeMap
-        )
-
-        if (entity.entityType === ENTITY_TYPES.chapter_progress) {
-          const { studentId, chapterId, percent } = entity as ChapterProgress
-
-          if (percent !== 100) {
-            return
-          }
-
-          const chapter = await getChapterById(chapterId)
-          if (chapter) {
-            const { xp } = chapter
-
-            console.log('updating student xp chapter', { studentId, xp })
-            await updateStudentXp({ id: studentId, xp })
+const processRecord =
+  (index: SearchIndex) => async (record: DynamoDBRecord) => {
+    switch (record.eventName) {
+      case 'REMOVE':
+        if (record.dynamodb?.OldImage) {
+          const entity = dynamoRecordToEntity(
+            record.dynamodb?.OldImage as AttributeMap
+          )
+          if (isIndexableEntity(entity)) {
+            await deleteAlgoliaObject(index, entity.id!)
           }
         }
-
-        if (entity.entityType === ENTITY_TYPES.course_progress) {
-          const { studentId, courseId, percent } = entity as CourseProgress
-
-          if (percent !== 100) {
-            return
-          }
-
-          const course = await getCourseById(courseId)
-          if (course) {
-            const { xp } = course
-
-            console.log('updating student xp for course', { studentId, xp })
-            await updateStudentXp({ id: studentId, xp })
+        break
+      default:
+        if (record.dynamodb?.NewImage) {
+          const entity = dynamoRecordToEntity(
+            record.dynamodb?.NewImage as AttributeMap
+          )
+          if (isProgressEntity(entity)) {
+            await updateStudentProgress(entity)
+          } else if (isIndexableEntity(entity)) {
+            if (entity.deleted) {
+              await deleteAlgoliaObject(index, entity.id!)
+            } else {
+              await saveAlgoliaObject(index, entity)
+            }
           }
         }
-      }
-      break
+        break
+    }
   }
-}
 
 export const handler: Handler = async (event: DynamoDBStreamEvent) => {
-  await Promise.all(event.Records.map(processRecord))
+  const algoliaIndex = await getAlgoliaIndex()
+  await Promise.all(event.Records.map(processRecord(algoliaIndex)))
 }

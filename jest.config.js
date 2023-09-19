@@ -3,6 +3,6 @@ module.exports = {
   testEnvironment: 'node',
   globalSetup: './infra/setupDynamoDB.js',
   globalTeardown: './infra/teardownDynamoDB.js',
-  coveragePathIgnorePatterns: ['<rootDir>/src/client.ts', 'test/'],
+  coveragePathIgnorePatterns: ['<rootDir>/src/clients/', 'test/'],
   testPathIgnorePatterns: ['/node_modules/', '/tutorials/']
 }

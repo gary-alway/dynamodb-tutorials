@@ -1,13 +1,13 @@
 import { pathOr } from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
 import { addPrefix, valueToAttributeValue } from '../utils'
-import { TABLE_NAME, dynamoClient as client } from '../client'
+import { TABLE_NAME, dynamoClient as client } from '../clients/aws-clients'
 import { dynamoRecordToEntity } from './transformer'
 import { ENTITY_TYPES, TRACK_PREFIX, Track } from '../types'
 
 const entityType = ENTITY_TYPES.track
 
-export const getTrackById = async (id: string): Promise<Track | null> =>
+export const getTrackById = (id: string): Promise<Track | null> =>
   client
     .getItem({
       TableName: TABLE_NAME,
@@ -18,7 +18,7 @@ export const getTrackById = async (id: string): Promise<Track | null> =>
     })
     .then(({ Item }) => (Item ? dynamoRecordToEntity<Track>(Item) : null))
 
-export const getTracks = async (): Promise<Track[]> =>
+export const getTracks = (): Promise<Track[]> =>
   client
     .query({
       TableName: TABLE_NAME,

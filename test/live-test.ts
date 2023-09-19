@@ -1,8 +1,12 @@
-import { testCourse, testStudent, testTrack } from '../test/test-factories'
-import { saveCourse } from './domain/course'
-import { saveCourseProgress } from './domain/progress'
-import { getStudentById, saveStudent } from './domain/student'
-import { saveTrack } from './domain/track'
+import { testCourse, testStudent, testTrack } from './test-factories'
+import { saveCourse } from '../src/domain/course'
+import { saveCourseProgress } from '../src/domain/progress'
+import {
+  deleteStudent,
+  getStudentById,
+  saveStudent
+} from '../src/domain/student'
+import { saveTrack } from '../src/domain/track'
 
 function delay(ms: number): Promise<void> {
   return new Promise(resolve => {
@@ -32,12 +36,14 @@ Promise.resolve()
     await delay(2000)
     const result = await getStudentById(studentId)
     console.log(result)
+
+    await deleteStudent(studentId)
   })
   .catch(err => {
     console.error(err)
     process.exit(1)
   })
   .then(() => {
-    console.log('done')
+    console.log('live test complete')
     process.exit(0)
   })

@@ -14,6 +14,7 @@ export type EntityName = keyof typeof ENTITY_TYPES
 type EntityType = {
   entityType: EntityName
   id?: string
+  deleted?: boolean
 }
 
 export type Student = EntityType & {
@@ -21,7 +22,6 @@ export type Student = EntityType & {
   lastName: string
   email: string
   xp: number
-  deleted?: boolean
 }
 
 export type Track = EntityType & {
@@ -62,9 +62,29 @@ export type Entity =
   | CourseProgress
   | ChapterProgress
 
+export type IndexableEntity = Student | Track | Course | Chapter
+
+export type ProgressEntity = CourseProgress | ChapterProgress
+
 export type AttributeMap = Record<string, AttributeValue>
 
 export const STUDENT_PREFIX = 'student#'
 export const TRACK_PREFIX = 'track#'
 export const COURSE_PREFIX = 'course#'
 export const CHAPTER_PREFIX = 'chapter#'
+
+export function isProgressEntity(entity: Entity): entity is ProgressEntity {
+  return (
+    entity.entityType === ENTITY_TYPES.course_progress ||
+    entity.entityType === ENTITY_TYPES.chapter_progress
+  )
+}
+
+export function isIndexableEntity(entity: Entity): entity is IndexableEntity {
+  return (
+    entity.entityType === ENTITY_TYPES.student ||
+    entity.entityType === ENTITY_TYPES.track ||
+    entity.entityType === ENTITY_TYPES.course ||
+    entity.entityType === ENTITY_TYPES.chapter
+  )
+}

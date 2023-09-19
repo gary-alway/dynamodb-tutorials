@@ -1,4 +1,3 @@
-import { TABLE_NAME, dynamoClient } from '../client'
 import { valueToAttributeValue, addPrefix } from '../utils'
 import { getCourseById } from './course'
 import { dynamoRecordToEntity } from './transformer'
@@ -8,11 +7,14 @@ import {
   ChapterProgress,
   CourseProgress,
   ENTITY_TYPES,
+  ProgressEntity,
   STUDENT_PREFIX
 } from '../types'
 import { getChapterById } from './chapter'
+import { dynamoClient, TABLE_NAME } from '../clients/aws-clients'
+import { updateStudentXp } from './student'
 
-export const getCourseProgress = async ({
+export const getCourseProgress = ({
   courseId,
   studentId
 }: {
@@ -57,7 +59,7 @@ export const saveCourseProgress = async ({
   })
 }
 
-export const getChapterProgress = async ({
+export const getChapterProgress = ({
   chapterId,
   studentId
 }: {
@@ -98,4 +100,51 @@ export const chapterComplete = async ({
       percent: valueToAttributeValue(100)
     }
   })
+}
+
+const updateStudentProgressForChapter = async ({
+  studentId,
+  chapterId,
+  percent
+}: ChapterProgress) => {
+  if (percent !== 100) {
+    return
+  }
+
+  const chapter = await getChapterById(chapterId)
+  if (chapter) {
+    const { xp } = chapter
+
+    await updateStudentXp({ id: studentId, xp })
+  }
+}
+
+const updateStudentProgressForCourse = async ({
+  studentId,
+  courseId,
+  percent
+}: CourseProgress) => {
+  if (percent !== 100) {
+    return
+  }
+
+  const course = await getCourseById(courseId)
+  if (course) {
+    const { xp } = course
+
+    await updateStudentXp({ id: studentId, xp })
+  }
+}
+
+export const updateStudentProgress = async (entity: ProgressEntity) => {
+  switch (entity.entityType) {
+    case ENTITY_TYPES.chapter_progress:
+      await updateStudentProgressForChapter(entity as ChapterProgress)
+      break
+    case ENTITY_TYPES.course_progress:
+      await updateStudentProgressForCourse(entity as CourseProgress)
+      break
+    default:
+      throw new Error('Invalid entity type')
+  }
 }

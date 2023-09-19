@@ -1,5 +1,4 @@
 import { head, pathOr } from 'ramda'
-import { TABLE_NAME, dynamoClient } from '../client'
 import { valueToAttributeValue, addPrefix, valueOrNull } from '../utils'
 import { v4 as uuidv4 } from 'uuid'
 import { dynamoRecordToEntity } from './transformer'
@@ -11,8 +10,9 @@ import {
   TRACK_PREFIX
 } from '../types'
 import { getCourseById } from './course'
+import { dynamoClient, TABLE_NAME } from '../clients/aws-clients'
 
-export const getChapterById = async (id: string): Promise<Chapter | null> =>
+export const getChapterById = (id: string): Promise<Chapter | null> =>
   dynamoClient
     .query({
       TableName: TABLE_NAME,
@@ -36,9 +36,7 @@ export const getChapterById = async (id: string): Promise<Chapter | null> =>
       )
     )
 
-export const getChaptersByCourseId = async (
-  courseId: string
-): Promise<Chapter[]> =>
+export const getChaptersByCourseId = (courseId: string): Promise<Chapter[]> =>
   dynamoClient
     .query({
       TableName: TABLE_NAME,

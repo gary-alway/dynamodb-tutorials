@@ -21,7 +21,12 @@ provider:
       Resource:
         - 'arn:aws:dynamodb:eu-west-1:137374389243:table/demo-table'
         - 'arn:aws:dynamodb:eu-west-1:137374389243:table/demo-table/index/*'
-
+    - Effect: Allow
+      Action:
+        - ssm:GetParameter
+      Resource:
+        - arn:aws:ssm:eu-west-1:137374389243:parameter/algolia-apiKey
+        - arn:aws:ssm:eu-west-1:137374389243:parameter/algolia-appId
 functions:
   stream:
     handler: src/lambda/stream.handler

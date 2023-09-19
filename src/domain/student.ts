@@ -1,5 +1,5 @@
 import { head, pathOr } from 'ramda'
-import { TABLE_NAME, dynamoClient } from '../client'
+import { TABLE_NAME, dynamoClient } from '../clients/aws-clients'
 import { v4 as uuidv4 } from 'uuid'
 import { addPrefix, valueOrNull, valueToAttributeValue } from '../utils'
 import { dynamoRecordToEntity } from './transformer'
