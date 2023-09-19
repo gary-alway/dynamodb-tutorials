@@ -1,4 +1,4 @@
-import { testChapter, testCourse, testTrack } from '../../test/testFactories'
+import { testChapter, testCourse, testTrack } from '../../test/test-factories'
 import { getChapterById, getChaptersByCourseId, saveChapter } from './chapter'
 import { getCourseById, saveCourse } from './course'
 import { saveTrack } from './track'

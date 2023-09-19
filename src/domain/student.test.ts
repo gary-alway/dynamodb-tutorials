@@ -1,4 +1,4 @@
-import { testEmail, testStudent } from '../../test/testFactories'
+import { testEmail, testStudent } from '../../test/test-factories'
 import { ENTITY_TYPES } from '../types'
 import {
   deleteStudent,

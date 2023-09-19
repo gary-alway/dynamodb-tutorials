@@ -1,4 +1,4 @@
-import { testCourse, testStudent, testTrack } from '../test/testFactories'
+import { testCourse, testStudent, testTrack } from '../test/test-factories'
 import { saveCourse } from './domain/course'
 import { saveCourseProgress } from './domain/progress'
 import { getStudentById, saveStudent } from './domain/student'

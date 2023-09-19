@@ -3,7 +3,7 @@ import {
   testCourse,
   testStudent,
   testChapter
-} from '../../test/testFactories'
+} from '../../test/test-factories'
 import { saveChapter } from './chapter'
 import { saveCourse } from './course'
 import {

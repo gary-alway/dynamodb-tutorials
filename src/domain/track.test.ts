@@ -1,4 +1,4 @@
-import { testTrack } from '../../test/testFactories'
+import { testTrack } from '../../test/test-factories'
 import { getTrackById, getTracks, saveTrack } from './track'
 
 const track = testTrack()
