@@ -6,6 +6,7 @@
   "scripts": {
     "test:live": "ts-node --project tsconfig.json test/live-test.ts",
     "truncate:live": "ts-node --project tsconfig.json test/live-truncate-table.ts",
+    "scan:live": "aws dynamodb scan --table-name demo-table --no-cli-pager",
     "test": "IS_OFFLINE=true jest --coverage",
     "type-check": "tsc --noEmit",
     "prepare": "husky install",
@@ -36,6 +37,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.408.0",
+    "@aws-sdk/client-sns": "^3.414.0",
     "@aws-sdk/client-ssm": "^3.414.0",
     "algoliasearch": "^4.20.0",
     "aws-lambda": "^1.0.7",

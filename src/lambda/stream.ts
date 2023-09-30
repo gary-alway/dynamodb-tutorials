@@ -1,6 +1,12 @@
 import { DynamoDBStreamEvent, DynamoDBRecord, Handler } from 'aws-lambda'
 
-import { AttributeMap, isIndexableEntity, isProgressEntity } from '../types'
+import {
+  AttributeMap,
+  ENTITY_TYPES,
+  LEGACY_EVENT_TYPES,
+  isIndexableEntity,
+  isProgressEntity
+} from '../types'
 import { dynamoRecordToEntity } from '../domain/transformer'
 import { updateStudentProgress } from '../domain/progress'
 import {
@@ -9,6 +15,7 @@ import {
   saveAlgoliaObject
 } from '../clients/algolia-client'
 import { SearchIndex } from 'algoliasearch'
+import { publishSnsMessage } from '../clients/aws-clients'
 
 const processRecord =
   (index: SearchIndex) => async (record: DynamoDBRecord) => {
@@ -28,6 +35,7 @@ const processRecord =
           const entity = dynamoRecordToEntity(
             record.dynamodb?.NewImage as AttributeMap
           )
+
           if (isProgressEntity(entity)) {
             await updateStudentProgress(entity)
           } else if (isIndexableEntity(entity)) {
@@ -36,6 +44,10 @@ const processRecord =
             } else {
               await saveAlgoliaObject(index, entity)
             }
+          }
+
+          if (entity.entityType === ENTITY_TYPES.student) {
+            await publishSnsMessage(LEGACY_EVENT_TYPES.student_update, entity)
           }
         }
         break

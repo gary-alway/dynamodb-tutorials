@@ -1,5 +1,14 @@
 import { AttributeValue } from '@aws-sdk/client-dynamodb'
 
+export const EXTERNAL_EVENT_TYPES = {
+  course_completed: 'CourseComplete',
+  chapter_completed: 'ChapterComplete'
+}
+
+export const LEGACY_EVENT_TYPES = {
+  student_update: 'StudentUpdate'
+}
+
 export const ENTITY_TYPES = {
   student: 'student',
   track: 'track',

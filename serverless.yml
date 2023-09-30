@@ -27,6 +27,17 @@ provider:
       Resource:
         - arn:aws:ssm:eu-west-1:137374389243:parameter/algolia-apiKey
         - arn:aws:ssm:eu-west-1:137374389243:parameter/algolia-appId
+    - Effect: 'Allow'
+      Action:
+        - sqs:ReceiveMessage
+        - sqs:DeleteMessage
+      Resource:
+        - arn:aws:sqs:eu-west-1:137374389243:processor-queue
+    - Effect: 'Allow'
+      Action:
+        - sns:Publish
+      Resource:
+        - arn:aws:sns:eu-west-1:137374389243:demo-topic
 functions:
   stream:
     handler: src/lambda/stream.handler
@@ -35,3 +46,8 @@ functions:
           enabled: true
           type: dynamodb
           arn: 'arn:aws:dynamodb:eu-west-1:137374389243:table/demo-table/stream/2023-09-12T18:22:39.142'
+  processor:
+    handler: src/lambda/processor.handler
+    events:
+      - sqs:
+          arn: 'arn:aws:sqs:eu-west-1:137374389243:processor-queue'

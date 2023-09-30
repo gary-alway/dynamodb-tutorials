@@ -1,10 +1,12 @@
 # dynamodb-tutorials
 
-## AWS commands
+## Legacy receives updates
 
-```
-aws dynamodb scan --table-name demo-table --no-cli-pager
-```
+![architecture](./infra/architecture-legacy-update.png)
+
+## Legacy sends updates
+
+![architecture](./infra/architecture-processor.png)
 
 ## Tutorial 1 - basics
 
@@ -35,3 +37,9 @@ aws dynamodb scan --table-name demo-table --no-cli-pager
 [Code](./tutorials/tutorial-5-search-index)
 
 [Article](https://www.datacamp.com/tutorial/dynamodb-streams-part-2-search-index-integration)
+
+## Tutorial 6 - streams part 3 - legacy system integrations
+
+[Code](./tutorials/tutorial-6-legacy-integration)
+
+[Article](https://www.datacamp.com/tutorial/dynamodb-streams-part-3-legacy-systems-integration)
