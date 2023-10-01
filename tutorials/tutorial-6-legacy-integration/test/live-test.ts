@@ -2,7 +2,10 @@ import { testCourse, testStudent, testTrack } from './test-factories'
 import { saveCourse } from '../src/domain/course'
 import { getStudentById, saveStudent } from '../src/domain/student'
 import { saveTrack } from '../src/domain/track'
-import { publishSnsMessage } from '../src/clients/aws-clients'
+import {
+  publishSnsMessage,
+  receiveSqsMessages
+} from '../src/clients/aws-clients'
 import { delay } from './delay'
 import { EXTERNAL_EVENT_TYPES } from '../src/types'
 
@@ -35,6 +38,9 @@ Promise.resolve()
     await delay(5000)
     const result = await getStudentById(studentId)
     console.log(result)
+
+    const legacyMessages = await receiveSqsMessages('legacy')
+    console.log(legacyMessages)
   })
   .catch(err => {
     console.error(err)
